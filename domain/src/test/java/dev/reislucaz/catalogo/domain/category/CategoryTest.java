@@ -1,5 +1,7 @@
 package dev.reislucaz.catalogo.domain.category;
 
+import dev.reislucaz.catalogo.domain.exceptions.DomainException;
+import dev.reislucaz.catalogo.domain.validation.handler.ThrowsValidationHandler;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -22,5 +24,22 @@ public class CategoryTest {
         Assertions.assertEquals(expectedName, actualCategory.getName());
         Assertions.assertEquals(expectedDescription, actualCategory.getDescription());
         Assertions.assertEquals(expectedIsActive, actualCategory.isActive());
+    }
+
+    @Test
+    public void givenAnInvalidNullName_whenCallNewCategoryAndValidate_thenShouldReceiveError() {
+        final String expectedName = null;
+        final var expectedErrorCount = 1;
+        final var expectedErrorMessage = "'name' should not be null";
+        final var expectedDescription = "A categoria mais assistida";
+        final var expectedIsActive = true;
+
+        final var actualCategory = Category.newCategory(expectedName, expectedDescription, expectedIsActive);
+
+        final var actualException =
+                Assertions.assertThrows(DomainException.class, () -> actualCategory.validate(new ThrowsValidationHandler()));
+
+        Assertions.assertEquals(expectedErrorMessage, actualException.getErrors().get(0).aMessage());
+        Assertions.assertEquals(expectedErrorCount, actualException.getErrors().size());
     }
 }

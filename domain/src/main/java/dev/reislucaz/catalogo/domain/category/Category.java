@@ -1,6 +1,7 @@
 package dev.reislucaz.catalogo.domain.category;
 
 import dev.reislucaz.catalogo.domain.AggregateRoot;
+import dev.reislucaz.catalogo.domain.validation.ValidationHandler;
 
 import java.time.Instant;
 
@@ -37,6 +38,12 @@ public class Category extends AggregateRoot<CategoryID> {
         final var now = Instant.now();
 
         return new Category(id, aName, aDescription, isActive, now, now, null);
+    }
+
+
+    @Override
+    public void validate(ValidationHandler aHandler) {
+        new CategoryValidator(this, aHandler).validate();
     }
 
     public CategoryID getId() {
