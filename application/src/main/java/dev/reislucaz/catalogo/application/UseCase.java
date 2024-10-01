@@ -1,9 +1,5 @@
 package dev.reislucaz.catalogo.application;
 
-import dev.reislucaz.catalogo.domain.category.Category;
-
-public class UseCase {
-    public Category execute() {
-        return new Category();
-    }
+public abstract class UseCase<Input, Output> {
+    public abstract Output execute(Input anInput);
 }
