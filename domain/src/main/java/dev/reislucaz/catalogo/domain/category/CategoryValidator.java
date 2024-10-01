@@ -6,6 +6,9 @@ import dev.reislucaz.catalogo.domain.validation.Validator;
 
 public class CategoryValidator extends Validator {
 
+    private static final int NAME_MAX_LENGTH = 255;
+    private static final int NAME_MIN_LENGTH = 3;
+
     private final Category category;
 
     protected CategoryValidator(final Category aCategory, ValidationHandler aHandler) {
@@ -33,7 +36,7 @@ public class CategoryValidator extends Validator {
 
         final int length = name.trim().length();
 
-        if (name.length() > 255 || length < 3) {
+        if (name.length() > NAME_MAX_LENGTH || length < NAME_MIN_LENGTH) {
             this.validationHandler().append(new Error("'name' must be between 3 and 255 characters"));
         }
     }
