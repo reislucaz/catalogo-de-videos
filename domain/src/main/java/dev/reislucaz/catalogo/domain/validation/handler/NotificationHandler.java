@@ -26,6 +26,10 @@ public class NotificationHandler implements ValidationHandler {
         return notification;
     }
 
+    public static NotificationHandler create(final Throwable t) {
+        return create(new Error(t.getMessage()));
+    }
+
     @Override
     public ValidationHandler append(final Error anError) {
         this.errors.add(anError);

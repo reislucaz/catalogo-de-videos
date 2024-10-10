@@ -40,7 +40,11 @@ public class CreateCategoryUseCaseTest {
         final var actualOutput = useCase.execute(aCommand);
 
         Assertions.assertNotNull(actualOutput);
-        Assertions.assertNotNull(actualOutput.id());
+        Assertions.assertTrue(actualOutput.isRight());
+
+        if (actualOutput.isRight()){
+            Assertions.assertNotNull(actualOutput.get().id());
+        }
 
         Mockito.verify(gateway, times(1))
                 .create(argThat(aCategory ->
@@ -67,7 +71,11 @@ public class CreateCategoryUseCaseTest {
         final var actualOutput = useCase.execute(aCommand);
 
         Assertions.assertNotNull(actualOutput);
-        Assertions.assertNotNull(actualOutput.id());
+        Assertions.assertTrue(actualOutput.isRight());
+
+        if (actualOutput.isRight()){
+            Assertions.assertNotNull(actualOutput.get().id());
+        }
 
         Mockito.verify(gateway, times(1))
                 .create(argThat(aCategory ->
@@ -87,12 +95,14 @@ public class CreateCategoryUseCaseTest {
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
         final var expectedErrorMessage = "'name' should not be null";
+        final var expectedErrorCount = 1;
 
         final var aCommand = CreateCategoryCommand.with(expectedName, expectedDescription, expectedIsActive);
 
-        final var actualException = Assertions.assertThrows(DomainException.class, () -> useCase.execute(aCommand));
+        final var notification = useCase.execute(aCommand).getLeft();
 
-        Assertions.assertEquals(expectedErrorMessage, actualException.getMessage());
+        Assertions.assertEquals(expectedErrorMessage, notification.getErrors().get(0).aMessage());
+        Assertions.assertEquals(expectedErrorCount, notification.getErrors().size());
 
         Mockito.verify(gateway, times(0)).create(any());
     }

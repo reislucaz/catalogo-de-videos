@@ -4,6 +4,7 @@ import dev.reislucaz.catalogo.domain.category.Category;
 import dev.reislucaz.catalogo.domain.category.CategoryGateway;
 import dev.reislucaz.catalogo.domain.validation.handler.NotificationHandler;
 import dev.reislucaz.catalogo.domain.validation.handler.ThrowsValidationHandler;
+import io.vavr.API;
 import io.vavr.control.Either;
 
 import java.util.Objects;
@@ -27,10 +28,13 @@ public class DefaultCreateCategoryUseCase extends CreateCategoryUseCase {
 
         aCategory.validate(notification);
 
-        if (notification.hasError()) {
-            return Either.left(notification);
-        }
+        return notification.hasError() ? Either.left(notification) : Either.right(CreateCategoryOutput.from(this.categoryGateway.create(aCategory)));
+    }
 
-        return Either.right(CreateCategoryOutput.from(this.categoryGateway.create(aCategory)));
+    private Either<NotificationHandler, CreateCategoryOutput> create(final Category aCategory) {
+        return API.Try(() -> this.categoryGateway.create(aCategory))
+                .toEither()
+                .map(CreateCategoryOutput::from)
+                .mapLeft(NotificationHandler::create);
     }
 }
