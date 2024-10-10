@@ -4,6 +4,7 @@ import dev.reislucaz.catalogo.domain.AggregateRoot;
 import dev.reislucaz.catalogo.domain.validation.ValidationHandler;
 
 import java.time.Instant;
+import java.util.Optional;
 
 public class Category extends AggregateRoot<CategoryID> {
 
@@ -78,6 +79,26 @@ public class Category extends AggregateRoot<CategoryID> {
             activate();
         } else {
             deactivate();
+        }
+
+        this.updatedAt = Instant.now();
+        return this;
+    }
+
+    public Category update(
+            final Optional<String> aName,
+            final Optional<String> aDescription,
+            final Optional<Boolean> isActive
+    ) {
+        aName.ifPresent(value -> this.name = value);
+        aDescription.ifPresent(value -> this.description = value);
+
+        if (isActive.isPresent()) {
+            if (isActive.get()) {
+                activate();
+            } else {
+                deactivate();
+            }
         }
 
         this.updatedAt = Instant.now();
