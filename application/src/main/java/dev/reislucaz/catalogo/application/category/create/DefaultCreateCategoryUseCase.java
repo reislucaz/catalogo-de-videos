@@ -28,7 +28,7 @@ public class DefaultCreateCategoryUseCase extends CreateCategoryUseCase {
 
         aCategory.validate(notification);
 
-        return notification.hasError() ? Either.left(notification) : Either.right(CreateCategoryOutput.from(this.categoryGateway.create(aCategory)));
+        return notification.hasError() ? Either.left(notification) : create(aCategory);
     }
 
     private Either<NotificationHandler, CreateCategoryOutput> create(final Category aCategory) {
