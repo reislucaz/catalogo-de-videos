@@ -118,9 +118,11 @@ public class CreateCategoryUseCaseTest {
 
         when(gateway.create(any())).thenThrow(new IllegalStateException(expectedErrorMessage));
 
-        final var actualException = Assertions.assertThrows(IllegalStateException.class, () -> useCase.execute(aCommand));
+        final var actualResult = useCase.execute(aCommand);
 
-        Assertions.assertEquals(expectedErrorMessage, actualException.getMessage());
+        Assertions.assertTrue(actualResult.isLeft());
+
+        Assertions.assertEquals(expectedErrorMessage, actualResult.getLeft().getErrors().get(0).aMessage());
 
         Mockito.verify(gateway, times(1))
                 .create(argThat(aCategory ->
