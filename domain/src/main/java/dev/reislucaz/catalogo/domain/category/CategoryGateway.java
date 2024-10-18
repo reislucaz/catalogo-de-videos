@@ -1,6 +1,7 @@
 package dev.reislucaz.catalogo.domain.category;
 
 import dev.reislucaz.catalogo.domain.pagination.Pagination;
+import dev.reislucaz.catalogo.domain.pagination.SearchQuery;
 
 import java.util.Optional;
 
@@ -13,5 +14,5 @@ public interface CategoryGateway {
 
     Optional<Category> findById(CategoryID anId);
 
-    Pagination<Category> findAll(CategorySearchQuery aQuery);
+    Pagination<Category> findAll(SearchQuery aQuery);
 }
