@@ -5,6 +5,7 @@ import dev.reislucaz.catalogo.domain.category.CategoryGateway;
 import dev.reislucaz.catalogo.domain.category.CategoryID;
 import dev.reislucaz.catalogo.domain.pagination.Pagination;
 import dev.reislucaz.catalogo.domain.pagination.SearchQuery;
+import dev.reislucaz.catalogo.infrastructure.category.persistence.CategoryJpaEntity;
 import dev.reislucaz.catalogo.infrastructure.category.persistence.CategoryRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,11 @@ public class CategoryMySQLGateway implements CategoryGateway {
 
     @Override
     public Category create(Category aCategory) {
-        return null;
+        final CategoryJpaEntity entity = CategoryJpaEntity.from(aCategory);
+
+        repository.save(entity);
+
+        return aCategory;
     }
 
     @Override
@@ -35,7 +40,8 @@ public class CategoryMySQLGateway implements CategoryGateway {
 
     @Override
     public Optional<Category> findById(CategoryID anId) {
-        return Optional.empty();
+        return repository.findById(anId.getValue())
+                .map(v -> Category.from(v.toAggregate()));
     }
 
     @Override
