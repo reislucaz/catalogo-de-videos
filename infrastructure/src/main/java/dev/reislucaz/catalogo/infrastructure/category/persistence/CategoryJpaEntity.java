@@ -13,6 +13,7 @@ import java.time.Instant;
 @Table(name="categories")
 public class CategoryJpaEntity {
     @Id
+    @Column(length = 36)
     private String id;
 
     @Column(name="name", nullable = false)
