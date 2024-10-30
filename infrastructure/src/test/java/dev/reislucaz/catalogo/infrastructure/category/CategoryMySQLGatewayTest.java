@@ -84,4 +84,26 @@ public class CategoryMySQLGatewayTest {
         Assertions.assertEquals(aCategory.getCreatedAt(), persistedCategory.getCreatedAt());
         Assertions.assertEquals(actualCategory.getUpdatedAt(), persistedCategory.getUpdatedAt());
     }
+
+    @Test
+    public void givenAValidCategory_whenCallsDelete_thenDeleteCategory() {
+        final var expectedName = "Filmes";
+        final var expectedDescription = "Categoria de Filmes";
+        final var expectedIsActive = true;
+
+        final var aCategory = Category.newCategory(expectedName, expectedDescription, expectedIsActive);
+
+        categoryRepository.saveAndFlush(CategoryJpaEntity.from(aCategory));
+
+        Assertions.assertEquals(1, categoryRepository.count());
+
+        final var categoryId = aCategory.getId();
+
+        categoryMySQLGateway.deleteById(categoryId);
+
+        Assertions.assertEquals(0, categoryRepository.count());
+
+        final var deletedCategory = categoryRepository.findById(categoryId.getValue());
+        Assertions.assertTrue(deletedCategory.isEmpty(), "Category should be deleted and not found in the repository");
+    }
 }
