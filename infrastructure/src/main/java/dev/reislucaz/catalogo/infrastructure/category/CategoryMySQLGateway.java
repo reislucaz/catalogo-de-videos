@@ -21,17 +21,11 @@ public class CategoryMySQLGateway implements CategoryGateway {
 
     @Override
     public Category create(Category aCategory) {
-        final CategoryJpaEntity entity = CategoryJpaEntity.from(aCategory);
-
-        repository.save(entity);
-
-        return aCategory;
+        return repository.save(CategoryJpaEntity.from(aCategory)).toAggregate();
     }
 
     @Override
-    public void deleteById(CategoryID anId) {
-
-    }
+    public void deleteById(CategoryID anId) {   }
 
     @Override
     public Category update(Category aCategory) {
