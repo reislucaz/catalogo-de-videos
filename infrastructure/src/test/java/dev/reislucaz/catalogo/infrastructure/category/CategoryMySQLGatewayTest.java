@@ -2,6 +2,7 @@ package dev.reislucaz.catalogo.infrastructure.category;
 
 import dev.reislucaz.catalogo.domain.category.Category;
 import dev.reislucaz.catalogo.infrastructure.MySQLGatewayTest;
+import dev.reislucaz.catalogo.infrastructure.category.persistence.CategoryJpaEntity;
 import dev.reislucaz.catalogo.infrastructure.category.persistence.CategoryRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -47,5 +48,40 @@ public class CategoryMySQLGatewayTest {
             Assertions.assertEquals(expectedDescription, entity.getDescription());
             Assertions.assertEquals(expectedActive, entity.isActive());
         });
+    }
+
+    @Test
+    public void givenAValidCategory_whenCallsUpdate_thenReturnUpdatedCategory() {
+        final var initialName = "Filmes";
+        final var initialDescription = "Categoria de Filmes";
+        final var initialIsActive = true;
+
+        final var aCategory = Category.newCategory(initialName, initialDescription, initialIsActive);
+
+        categoryRepository.saveAndFlush(CategoryJpaEntity.from(aCategory));
+
+        Assertions.assertEquals(1, categoryRepository.count());
+
+        final var expectedName = "Filmes de Ação";
+        final var expectedDescription = "Categoria de Filmes de Ação";
+        final var expectedIsActive = false;
+
+        final var updatedCategory = aCategory.update(expectedName, expectedDescription, expectedIsActive);
+
+        final var actualCategory = categoryMySQLGateway.update(updatedCategory);
+
+        Assertions.assertEquals(aCategory.getId().getValue(), actualCategory.getId().getValue());
+        Assertions.assertEquals(expectedName, actualCategory.getName());
+        Assertions.assertEquals(expectedDescription, actualCategory.getDescription());
+        Assertions.assertEquals(expectedIsActive, actualCategory.isActive());
+        Assertions.assertEquals(aCategory.getCreatedAt(), actualCategory.getCreatedAt());
+
+        final var persistedCategory = categoryRepository.findById(actualCategory.getId().getValue()).get();
+
+        Assertions.assertEquals(expectedName, persistedCategory.getName());
+        Assertions.assertEquals(expectedDescription, persistedCategory.getDescription());
+        Assertions.assertEquals(expectedIsActive, persistedCategory.isActive());
+        Assertions.assertEquals(aCategory.getCreatedAt(), persistedCategory.getCreatedAt());
+        Assertions.assertEquals(actualCategory.getUpdatedAt(), persistedCategory.getUpdatedAt());
     }
 }
