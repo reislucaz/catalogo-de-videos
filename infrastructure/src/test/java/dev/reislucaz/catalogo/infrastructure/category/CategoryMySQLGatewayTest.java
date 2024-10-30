@@ -1,6 +1,7 @@
 package dev.reislucaz.catalogo.infrastructure.category;
 
 import dev.reislucaz.catalogo.domain.category.Category;
+import dev.reislucaz.catalogo.domain.pagination.SearchQuery;
 import dev.reislucaz.catalogo.infrastructure.MySQLGatewayTest;
 import dev.reislucaz.catalogo.infrastructure.category.persistence.CategoryJpaEntity;
 import dev.reislucaz.catalogo.infrastructure.category.persistence.CategoryRepository;
@@ -8,6 +9,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 @MySQLGatewayTest
 public class CategoryMySQLGatewayTest {
@@ -135,4 +138,33 @@ public class CategoryMySQLGatewayTest {
         Assertions.assertEquals(aCategory.getUpdatedAt(), foundCategory.getUpdatedAt());
     }
 
+    @Test
+    public void givenPersistedCategories_whenCallsFindAll_thenReturnPaginatedCategories() {
+        final var categories = List.of(
+                Category.newCategory("Filmes de Ação", null, true),
+                Category.newCategory("Filmes de Terror", null, true),
+                Category.newCategory("Documentários", null, true)
+        );
+
+        categories.forEach(category -> categoryRepository.saveAndFlush(CategoryJpaEntity.from(category)));
+
+        Assertions.assertEquals(3, categoryRepository.count());
+
+        final var searchQuery = new SearchQuery(0, 10, "", "name", "asc");
+
+        final var pageResult = categoryMySQLGateway.findAll(searchQuery);
+
+        Assertions.assertEquals(0, pageResult.currentPage());
+        Assertions.assertEquals(10, pageResult.perPage());
+        Assertions.assertEquals(3, pageResult.total());
+        Assertions.assertEquals(3, pageResult.items().size());
+
+        final var expectedNames = List.of("Documentários", "Filmes de Ação", "Filmes de Terror");
+
+        final var actualNames = pageResult.items().stream()
+                .map(Category::getName)
+                .toList();
+
+        Assertions.assertEquals(expectedNames, actualNames);
+    }
 }
