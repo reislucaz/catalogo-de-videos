@@ -60,7 +60,7 @@ public class CategoryMySQLGateway implements CategoryGateway {
         final var page = PageRequest.of(aQuery.page(), aQuery.perPage(), Sort.by(Sort.Direction.fromString(aQuery.direction()), aQuery.sort()));
 
         final var specifications = Optional.ofNullable(aQuery.terms())
-                .filter(str -> str.isBlank())
+                .filter(str -> !str.isBlank())
                 .map(str ->
                         SpecificationUtils.<CategoryJpaEntity>like("name", str)
                         .or(like("description", str)))
