@@ -2,7 +2,7 @@ package dev.reislucaz.catalogo.infrastructure.category;
 
 import dev.reislucaz.catalogo.domain.category.Category;
 import dev.reislucaz.catalogo.domain.pagination.SearchQuery;
-import dev.reislucaz.catalogo.infrastructure.MySQLGatewayTest;
+import dev.reislucaz.catalogo.MySQLGatewayTest;
 import dev.reislucaz.catalogo.infrastructure.category.persistence.CategoryJpaEntity;
 import dev.reislucaz.catalogo.infrastructure.category.persistence.CategoryRepository;
 import org.junit.jupiter.api.Assertions;

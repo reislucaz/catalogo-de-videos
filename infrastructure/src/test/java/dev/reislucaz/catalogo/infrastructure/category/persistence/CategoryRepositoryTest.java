@@ -1,7 +1,7 @@
 package dev.reislucaz.catalogo.infrastructure.category.persistence;
 
 import dev.reislucaz.catalogo.domain.category.Category;
-import dev.reislucaz.catalogo.infrastructure.MySQLGatewayTest;
+import dev.reislucaz.catalogo.MySQLGatewayTest;
 import org.hibernate.PropertyValueException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
