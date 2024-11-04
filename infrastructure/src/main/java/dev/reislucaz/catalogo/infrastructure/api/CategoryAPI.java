@@ -1,12 +1,15 @@
 package dev.reislucaz.catalogo.infrastructure.api;
 
 import dev.reislucaz.catalogo.domain.pagination.Pagination;
+import dev.reislucaz.catalogo.infrastructure.category.models.CreateCategoryApiInput;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RequestMapping(value = "categories")
 @Tag(name = "Categories")
@@ -17,7 +20,7 @@ public interface CategoryAPI {
     )
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a new category")
-    ResponseEntity<?> createCategory();
+    ResponseEntity<?> createCategory(@RequestBody @Valid CreateCategoryApiInput input);
 
     @GetMapping
     @Operation(summary = "List paginated categories using a search query")
