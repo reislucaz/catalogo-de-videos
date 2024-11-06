@@ -5,10 +5,12 @@ import dev.reislucaz.catalogo.application.category.create.CreateCategoryOutput;
 import dev.reislucaz.catalogo.application.category.create.CreateCategoryUseCase;
 import dev.reislucaz.catalogo.application.category.retrieve.get.GetCategoryCommand;
 import dev.reislucaz.catalogo.application.category.retrieve.get.GetCategoryUseCase;
+import dev.reislucaz.catalogo.application.category.retrieve.list.ListCategoryUseCase;
 import dev.reislucaz.catalogo.application.category.update.UpdateCategoryCommand;
 import dev.reislucaz.catalogo.application.category.update.UpdateCategoryOutput;
 import dev.reislucaz.catalogo.application.category.update.UpdateCategoryUseCase;
 import dev.reislucaz.catalogo.domain.pagination.Pagination;
+import dev.reislucaz.catalogo.domain.pagination.SearchQuery;
 import dev.reislucaz.catalogo.domain.validation.handler.NotificationHandler;
 import dev.reislucaz.catalogo.infrastructure.api.CategoryAPI;
 import dev.reislucaz.catalogo.infrastructure.category.models.CategoryApiResponse;
@@ -26,19 +28,20 @@ import java.util.function.Function;
 public class CategoryController implements CategoryAPI {
 
     private final CreateCategoryUseCase createCategoryUseCase;
-
     private final GetCategoryUseCase getCategoryUseCase;
-
     private final UpdateCategoryUseCase updateCategoryUseCase;
+    private final ListCategoryUseCase listCategoryUseCase;
 
     public CategoryController(
             final CreateCategoryUseCase createCategoryUseCase,
             final GetCategoryUseCase getCategoryUseCase,
-            final UpdateCategoryUseCase updateCategoryUseCase
+            final UpdateCategoryUseCase updateCategoryUseCase,
+            final ListCategoryUseCase listCategoryUseCase
     ) {
         this.createCategoryUseCase = Objects.requireNonNull(createCategoryUseCase);
         this.getCategoryUseCase = Objects.requireNonNull(getCategoryUseCase);
         this.updateCategoryUseCase = Objects.requireNonNull(updateCategoryUseCase);
+        this.listCategoryUseCase = Objects.requireNonNull(listCategoryUseCase);
     }
 
     @Override
@@ -58,8 +61,16 @@ public class CategoryController implements CategoryAPI {
     }
 
     @Override
-    public Pagination<?> listCategories(String search, int page, int perPage, String sort, String dir) {
-        return null;
+    public Pagination<?> listCategories(
+            String search,
+            int page,
+            int perPage,
+            String sort,
+            String dir
+    ) {
+        return this.listCategoryUseCase
+                .execute(new SearchQuery(page, perPage, search, sort, dir))
+                .map(CategoryApiPresenter::present);
     }
 
     @Override
