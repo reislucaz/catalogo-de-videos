@@ -1,6 +1,7 @@
 package dev.reislucaz.catalogo.infrastructure.api;
 
 import dev.reislucaz.catalogo.domain.pagination.Pagination;
+import dev.reislucaz.catalogo.infrastructure.category.models.CategoryApiResponse;
 import dev.reislucaz.catalogo.infrastructure.category.models.CreateCategoryApiInput;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,10 +15,7 @@ import javax.validation.Valid;
 @RequestMapping(value = "categories")
 @Tag(name = "Categories")
 public interface CategoryAPI {
-    @PostMapping(
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
+    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a new category")
     ResponseEntity<?> createCategory(@RequestBody @Valid CreateCategoryApiInput input);
@@ -36,4 +34,8 @@ public interface CategoryAPI {
         @RequestParam(name = "dir", required = false, defaultValue = "asc")
         final String dir
     );
+
+    @GetMapping("{id}")
+    @Operation(summary = "Get category by identifier")
+    CategoryApiResponse getById(@PathVariable(name = "id") String anId);
 }
