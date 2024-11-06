@@ -1,8 +1,10 @@
 package dev.reislucaz.catalogo.application.category.retrieve.get;
 
+import dev.reislucaz.catalogo.domain.category.Category;
 import dev.reislucaz.catalogo.domain.category.CategoryGateway;
 import dev.reislucaz.catalogo.domain.category.CategoryID;
 import dev.reislucaz.catalogo.domain.exceptions.DomainException;
+import dev.reislucaz.catalogo.domain.exceptions.NotFoundException;
 import dev.reislucaz.catalogo.domain.validation.Error;
 
 import java.util.Objects;
@@ -25,6 +27,6 @@ public class DefaultGetCategoryUseCase extends GetCategoryUseCase {
     }
 
     private Supplier<DomainException> notFound (final CategoryID anId) {
-        return () -> DomainException.with(new Error("Category with id %s not found".formatted(anId.toString())));
+        return () -> NotFoundException.with(Category.class, anId);
     }
 }
